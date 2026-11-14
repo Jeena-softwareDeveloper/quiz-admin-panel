@@ -78,7 +78,7 @@ export const BannersTab: React.FC<BannersTabProps> = ({
                     Order #{banner.order}
                   </span>
                   {banner.isActive ? (
-                    <span className="bg-emerald-500/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                    <span className="bg-amber-500/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" /> Active on Mobile
                     </span>
                   ) : (
@@ -106,7 +106,7 @@ export const BannersTab: React.FC<BannersTabProps> = ({
                 {/* Tamil Translation Preview */}
                 {(banner.titleTamil || banner.subtitleTamil) && (
                   <div className="bg-slate-50 rounded-xl p-2.5 text-xs text-slate-700 border border-slate-100">
-                    <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block mb-0.5">
+                    <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block mb-0.5">
                       Tamil Localization
                     </span>
                     <p className="font-bold">{banner.titleTamil || banner.title}</p>
@@ -123,7 +123,7 @@ export const BannersTab: React.FC<BannersTabProps> = ({
                     <Badge variant="success">{banner.actionTarget || 'ALL'}</Badge>
                   </div>
                   <div className="flex items-center gap-1.5 font-semibold text-slate-600">
-                    Button: <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">{banner.actionText}</span>
+                    Button: <span className="text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-md">{banner.actionText}</span>
                   </div>
                 </div>
 
@@ -134,7 +134,7 @@ export const BannersTab: React.FC<BannersTabProps> = ({
                     className={`text-xs font-bold px-3 py-1.5 rounded-xl transition ${
                       banner.isActive
                         ? 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                        : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
                     }`}
                   >
                     {banner.isActive ? 'Hide from Mobile' : 'Show on Mobile'}

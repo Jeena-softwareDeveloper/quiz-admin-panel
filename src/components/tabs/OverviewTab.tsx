@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Layers, HelpCircle, Wallet, Sparkles, Plus } from 'lucide-react';
+import { Users, TrendingUp, Wallet, Zap, Shield, ArrowRight } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -7,105 +7,96 @@ import { AdminStats } from '../../types';
 
 interface OverviewTabProps {
   stats: AdminStats | null;
-  onAddQuestion: () => void;
-  onAddRoom: () => void;
+  onGoToTrading: () => void;
 }
 
 /**
- * System Overview Dashboard Tab (Light Theme, 100% API Driven)
+ * QuickTrade System Overview Dashboard Tab
  */
 export const OverviewTab: React.FC<OverviewTabProps> = ({
   stats,
-  onAddQuestion,
-  onAddRoom,
+  onGoToTrading,
 }) => {
   return (
     <div className="space-y-8">
       {/* Metric Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <Card className="hover:border-emerald-200 transition duration-150">
+        <Card className="hover:border-amber-200 transition duration-150">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Users</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
           </div>
           <div className="text-3xl font-bold text-slate-800 mt-2">{stats?.totalUsers || 0}</div>
-          <p className="text-xs text-emerald-700 font-medium mt-1">100% Profiled by Education</p>
+          <p className="text-xs text-amber-700 font-medium mt-1">Active Trading Accounts</p>
         </Card>
 
-        <Card className="hover:border-emerald-200 transition duration-150">
+        <Card className="hover:border-amber-200 transition duration-150">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Active Rooms</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Layers className="w-4 h-4" />
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Trading Markets</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-slate-800 mt-2">{stats?.activeRooms || 0}</div>
-          <p className="text-xs text-slate-600 mt-1">Total Scheduled: {stats?.totalRooms || 0}</p>
+          <div className="text-3xl font-bold text-slate-800 mt-2">5</div>
+          <p className="text-xs text-emerald-600 font-bold mt-1">Bitcoin, Gold, ETH, SOL, Silver</p>
         </Card>
 
-        <Card className="hover:border-emerald-200 transition duration-150">
+        <Card className="hover:border-amber-200 transition duration-150">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Questions Bank</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Market Engine</span>
             <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
-              <HelpCircle className="w-4 h-4" />
+              <Zap className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-slate-800 mt-2">{stats?.totalQuestions || 0}</div>
-          <p className="text-xs text-slate-600 mt-1">Bilingual (Tamil & English)</p>
+          <div className="text-3xl font-bold text-emerald-600 mt-2">LIVE</div>
+          <p className="text-xs text-slate-500 mt-1">1.5s Real-Time Candle Ticker</p>
         </Card>
 
-        <Card className="hover:border-emerald-200 transition duration-150">
+        <Card className="hover:border-amber-200 transition duration-150">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Total Wallet Pool</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Wallet className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-emerald-700 mt-2">
+          <div className="text-3xl font-bold text-amber-700 mt-2">
             ₹{stats?.totalWalletPool?.toLocaleString('en-IN') || 0}
           </div>
           <p className="text-xs text-slate-600 mt-1">{stats?.totalTransactions || 0} Total Transactions</p>
         </Card>
       </div>
 
-      {/* Dynamic Category Distribution from API */}
+      {/* QuickTrade Live Status Banner */}
       <Card
-        title="Active Category Distribution"
-        subtitle="Question inventory dynamically loaded from database"
+        title="QuickTrade Real-Time Prediction Status"
+        subtitle="Live automated price feeds and algorithmic trade settlement"
         action={
           <Badge variant="emerald" pulse>
-            Live Sync
+            Engine Active
           </Badge>
         }
       >
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
-          {stats?.categoryBreakdown?.map((cat) => (
-            <div
-              key={cat.category}
-              className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-emerald-50/50 hover:border-emerald-200 transition"
-            >
-              <span className="text-[11px] font-bold uppercase text-emerald-700 tracking-wider">
-                {cat.category}
-              </span>
-              <div className="text-2xl font-black text-slate-900 mt-1">{cat._count.id} Questions</div>
-              <p className="text-xs text-slate-500 mt-0.5">Available for matchmaking</p>
-            </div>
-          ))}
+        <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
+          <div>
+            <h4 className="text-sm font-extrabold text-slate-900">
+              Live Prediction & Market Control Console
+            </h4>
+            <p className="text-xs text-slate-500 mt-1 max-w-xl">
+              Override upcoming candle outcomes (Force Green, Force Red, House Edge), adjust market base prices and customize payout returns in real-time.
+            </p>
+          </div>
+
+          <Button
+            variant="primary"
+            icon={<ArrowRight className="w-4 h-4" />}
+            onClick={onGoToTrading}
+          >
+            Open Market Controls
+          </Button>
         </div>
       </Card>
-
-      {/* Quick Launch Actions */}
-      <div className="flex flex-wrap gap-4 pt-2">
-        <Button variant="primary" icon={<Plus className="w-4 h-4" />} onClick={onAddQuestion}>
-          Create New Question
-        </Button>
-        <Button variant="outline" icon={<Layers className="w-4 h-4" />} onClick={onAddRoom}>
-          Schedule New Quiz Room
-        </Button>
-      </div>
     </div>
   );
 };
-

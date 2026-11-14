@@ -19,33 +19,29 @@ export const Header: React.FC<HeaderProps> = ({
   const titles: Record<TabType, { title: string; subtitle: string }> = {
     overview: {
       title: 'System Overview',
-      subtitle: 'Real-time metrics, active players, and category distribution',
+      subtitle: 'Real-time metrics, active markets, and total wallet liquidity',
     },
-    questions: {
-      title: 'Question Bank Management',
-      subtitle: 'Bilingual questions (Tamil & English) categorized by target education',
-    },
-    rooms: {
-      title: 'Quiz Rooms & Live Matches',
-      subtitle: 'Schedule and manage multi-tier skill tournaments',
-    },
-    users: {
-      title: 'User Demographics & Educational Profiling',
-      subtitle: 'Audience segmented by qualification, skill rating, and interests',
-    },
-    ledger: {
-      title: 'Double-Entry Financial Ledger',
-      subtitle: 'Real-time audit log of deposits, entry fees, and prize payouts',
+    trading: {
+      title: 'Market & Prediction Control',
+      subtitle: 'Real-time candle manipulation, live price override and active user bids monitoring',
     },
     banners: {
       title: 'Mobile Hero Banners',
       subtitle: 'Upload, prioritize, and toggle promotional banners on the mobile home screen',
     },
+    onboarding: {
+      title: 'Auth Onboarding Slides',
+      subtitle: 'Manage dynamic carousel slides, images, headings and paragraph text shown on the mobile auth screen',
+    },
+    ledger: {
+      title: 'Double-Entry Financial Ledger',
+      subtitle: 'Real-time audit log of deposits, entry fees, and prize payouts',
+    },
   };
 
   const current = titles[activeTab] || {
-    title: 'Quiz Arena Admin',
-    subtitle: 'Skill Quiz Master Dashboard',
+    title: 'Set Quick Trade Admin',
+    subtitle: 'Master Trading Dashboard',
   };
 
   return (
@@ -61,15 +57,14 @@ export const Header: React.FC<HeaderProps> = ({
           className="p-2 text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition"
           title="Refresh Data"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-600' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-amber-600' : ''}`} />
         </button>
 
-        <div className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
           Server Online (Port 5000)
         </div>
       </div>
     </header>
   );
 };
-

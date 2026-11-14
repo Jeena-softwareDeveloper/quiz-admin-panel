@@ -24,7 +24,7 @@ export const Input: React.FC<InputProps> = ({
         </label>
       )}
       <input
-        className={`w-full bg-slate-50 hover:bg-slate-50/80 focus:bg-white border rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-150 ${
+        className={`w-full bg-slate-50 hover:bg-slate-50/80 focus:bg-white border rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 transition duration-150 ${
           error ? 'border-rose-300 focus:border-rose-500' : 'border-slate-200'
         } ${className}`}
         {...props}

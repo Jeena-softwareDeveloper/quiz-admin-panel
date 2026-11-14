@@ -9,7 +9,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 /**
- * Reusable Button Component styled with Tailwind Green & Light Theme
+ * Reusable Button Component styled with Tailwind Gold/Amber & Light Theme
  */
 export const Button: React.FC<ButtonProps> = ({
   children,
@@ -30,7 +30,7 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const variantStyles = {
-    primary: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-600/20 active:bg-emerald-800',
+    primary: 'bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold shadow-sm shadow-amber-500/20 active:bg-amber-700',
     secondary: 'bg-slate-100 hover:bg-slate-200 text-slate-700 active:bg-slate-300',
     outline: 'border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 shadow-sm active:bg-slate-100',
     danger: 'bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200',

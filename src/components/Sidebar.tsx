@@ -1,16 +1,15 @@
 import React from 'react';
 import {
   LayoutDashboard,
-  HelpCircle,
-  Trophy,
-  Users,
   Wallet,
   LogOut,
-  Layers,
   Image,
+  Smartphone,
+  TrendingUp,
+  Trophy,
 } from 'lucide-react';
 
-export type TabType = 'overview' | 'questions' | 'rooms' | 'users' | 'ledger' | 'banners';
+export type TabType = 'overview' | 'trading' | 'banners' | 'onboarding' | 'ledger';
 
 interface SidebarProps {
   activeTab: TabType;
@@ -28,10 +27,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     { id: 'overview' as TabType, label: 'Dashboard Overview', icon: LayoutDashboard },
+    { id: 'trading' as TabType, label: 'Trade & Market Control', icon: TrendingUp },
     { id: 'banners' as TabType, label: 'Hero Banners', icon: Image },
-    { id: 'questions' as TabType, label: 'Question Bank', icon: HelpCircle },
-    { id: 'rooms' as TabType, label: 'Room Scheduler', icon: Layers },
-    { id: 'users' as TabType, label: 'User Profiling', icon: Users },
+    { id: 'onboarding' as TabType, label: 'Auth Onboarding Slides', icon: Smartphone },
     { id: 'ledger' as TabType, label: 'Wallet & Ledgers', icon: Wallet },
   ];
 
@@ -40,12 +38,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Brand Header */}
       <div>
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/20">
+          <div className="w-10 h-10 rounded-2xl bg-amber-600 text-white flex items-center justify-center shadow-md shadow-amber-600/20">
             <Trophy className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-extrabold text-slate-900 leading-tight tracking-tight">Quiz Arena</h1>
-            <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">Master Admin</span>
+            <h1 className="font-extrabold text-slate-900 leading-tight tracking-tight">Set Quick Trade</h1>
+            <span className="text-[11px] font-bold text-amber-600 uppercase tracking-wider">Master Admin</span>
           </div>
         </div>
 
@@ -60,11 +58,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition duration-150 ${
                   isActive
-                    ? 'bg-emerald-50 text-emerald-700 shadow-sm shadow-emerald-100'
+                    ? 'bg-amber-50 text-amber-700 shadow-sm shadow-amber-100'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-600' : 'text-slate-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-amber-600' : 'text-slate-400'}`} />
                 {item.label}
               </button>
             );
@@ -85,4 +83,3 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </aside>
   );
 };
-

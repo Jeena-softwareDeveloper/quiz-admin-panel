@@ -84,6 +84,18 @@ export interface BannerItem {
   createdAt: string;
 }
 
+export interface OnboardingSlideItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+
 export interface AdminStats {
   totalUsers: number;
   totalRooms: number;

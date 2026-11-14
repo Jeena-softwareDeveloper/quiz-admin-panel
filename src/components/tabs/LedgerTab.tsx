@@ -52,10 +52,10 @@ export const LedgerTab: React.FC<LedgerTabProps> = ({ ledgers }) => {
                   </td>
 
                   <td className="p-4">
-                    <Badge variant={isCredit ? 'emerald' : 'rose'}>{l.type}</Badge>
+                    <Badge variant={isCredit ? 'amber' : 'rose'}>{l.type}</Badge>
                   </td>
 
-                  <td className={`p-4 font-black ${isCredit ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  <td className={`p-4 font-black ${isCredit ? 'text-amber-600' : 'text-rose-600'}`}>
                     {isCredit ? '+' : '-'}₹{l.amount.toFixed(2)}
                   </td>
 

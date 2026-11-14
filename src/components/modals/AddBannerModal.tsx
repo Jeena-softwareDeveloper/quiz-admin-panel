@@ -94,7 +94,7 @@ export const AddBannerModal: React.FC<AddBannerModalProps> = ({
           </label>
 
           {imageUrl ? (
-            <div className="relative rounded-2xl overflow-hidden border-2 border-emerald-500 shadow-md bg-slate-900 group">
+            <div className="relative rounded-2xl overflow-hidden border-2 border-amber-500 shadow-md bg-slate-900 group">
               <img
                 src={imageUrl}
                 alt="Banner Preview"
@@ -115,8 +115,8 @@ export const AddBannerModal: React.FC<AddBannerModalProps> = ({
               </div>
             </div>
           ) : (
-            <div className="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-emerald-500 transition bg-slate-50/50">
-              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+            <div className="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-amber-500 transition bg-slate-50/50">
+              <div className="w-12 h-12 mx-auto rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
                 <Upload className="w-6 h-6" />
               </div>
               <p className="text-sm font-semibold text-slate-700">
@@ -125,7 +125,7 @@ export const AddBannerModal: React.FC<AddBannerModalProps> = ({
               <p className="text-xs text-slate-400 mt-1">
                 PNG, JPG, WEBP recommended (e.g. 16:9 or 2:1 ratio, max 15MB)
               </p>
-              <label className="mt-3 inline-block cursor-pointer bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow hover:bg-emerald-700 transition">
+              <label className="mt-3 inline-block cursor-pointer bg-amber-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow hover:bg-amber-700 transition">
                 Browse Image File
                 <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
               </label>
@@ -222,7 +222,7 @@ export const AddBannerModal: React.FC<AddBannerModalProps> = ({
 
         {/* Live Preview Box */}
         {title && (
-          <div className="p-4 rounded-2xl bg-emerald-950/80 border border-emerald-800 text-white">
+          <div className="p-4 rounded-2xl bg-amber-950/80 border border-amber-800 text-white">
             <div className="flex items-center gap-2 text-xs font-bold text-amber-400 mb-2">
               <Sparkles className="w-3.5 h-3.5" />
               Mobile App Preview
@@ -239,7 +239,7 @@ export const AddBannerModal: React.FC<AddBannerModalProps> = ({
                 <img
                   src={imageUrl}
                   alt="Thumb"
-                  className="w-20 h-16 rounded-xl object-cover border border-emerald-700/50"
+                  className="w-20 h-16 rounded-xl object-cover border border-amber-700/50"
                 />
               )}
             </div>

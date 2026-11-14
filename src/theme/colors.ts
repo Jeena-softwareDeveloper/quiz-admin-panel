@@ -1,15 +1,15 @@
 /**
  * Centralized Design System Tokens
- * Primary: Emerald/Green
+ * Primary: Yellow/Gold (Amber)
  * Background: Light Slate / White
  */
 export const THEME = {
   colors: {
     primary: {
-      light: '#ecfdf5', // emerald-50
-      main: '#059669',  // emerald-600
-      dark: '#047857',  // emerald-700
-      hover: '#10b981', // emerald-500
+      light: '#fef3c7', // amber-100 / soft gold
+      main: '#d97706',  // amber-600 / rich gold
+      dark: '#b45309',  // amber-700 / deep gold
+      hover: '#f59e0b', // amber-500 / bright gold
     },
     background: {
       body: '#f8fafc',  // slate-50 (clean light background)
@@ -19,7 +19,7 @@ export const THEME = {
     border: {
       default: '#e2e8f0', // slate-200
       subtle: '#f1f5f9',  // slate-100
-      focus: '#059669',   // emerald-600
+      focus: '#d97706',   // amber-600
     },
     text: {
       primary: '#0f172a',   // slate-900

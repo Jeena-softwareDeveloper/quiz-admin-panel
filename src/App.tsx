@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, RefreshCw } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { api, getAdminToken, saveAdminToken, clearAdminToken } from './api';
-import { AdminStats, QuestionItem, QuizRoomItem, UserProfile, LedgerItem, BannerItem } from './types';
+import { AdminStats, LedgerItem, BannerItem, OnboardingSlideItem } from './types';
 import { Sidebar, TabType } from './components/Sidebar';
 import { Header } from './components/Header';
 import { OverviewTab } from './components/tabs/OverviewTab';
-import { QuestionsTab } from './components/tabs/QuestionsTab';
-import { RoomsTab } from './components/tabs/RoomsTab';
-import { UsersTab } from './components/tabs/UsersTab';
+import { TradingTab } from './components/tabs/TradingTab';
 import { LedgerTab } from './components/tabs/LedgerTab';
 import { BannersTab } from './components/tabs/BannersTab';
-import { AddQuestionModal } from './components/modals/AddQuestionModal';
-import { AddRoomModal } from './components/modals/AddRoomModal';
-import { BulkUploadModal } from './components/modals/BulkUploadModal';
-import { ReviewResultsModal } from './components/modals/ReviewResultsModal';
+import { OnboardingTab } from './components/tabs/OnboardingTab';
 import { AddBannerModal } from './components/modals/AddBannerModal';
+import { AddOnboardingSlideModal } from './components/modals/AddOnboardingSlideModal';
+import { EditOnboardingSlideModal } from './components/modals/EditOnboardingSlideModal';
 import { Input } from './components/ui/Input';
 import { Button } from './components/ui/Button';
 
@@ -28,85 +25,40 @@ export default function App() {
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Dynamic Metadata from API
-  const [categories, setCategories] = useState<string[]>([]);
-  const [educationLevels, setEducationLevels] = useState<{ label: string; value: string }[]>([]);
-  const [difficulties, setDifficulties] = useState<string[]>([]);
-
   // System Data States
   const [stats, setStats] = useState<AdminStats | null>(null);
-  const [questions, setQuestions] = useState<QuestionItem[]>([]);
-  const [rooms, setRooms] = useState<QuizRoomItem[]>([]);
-  const [users, setUsers] = useState<UserProfile[]>([]);
   const [ledgers, setLedgers] = useState<LedgerItem[]>([]);
+  const [banners, setBanners] = useState<BannerItem[]>([]);
+  const [slides, setSlides] = useState<OnboardingSlideItem[]>([]);
 
   // Modals
-  const [showAddQuestion, setShowAddQuestion] = useState(false);
-  const [showAddRoom, setShowAddRoom] = useState(false);
-  const [showBulkUpload, setShowBulkUpload] = useState(false);
-  const [showReviewResults, setShowReviewResults] = useState(false);
-  const [selectedReviewRoomId, setSelectedReviewRoomId] = useState<string>('');
+  const [showAddBanner, setShowAddBanner] = useState(false);
+  const [showAddSlide, setShowAddSlide] = useState(false);
+  const [editingSlide, setEditingSlide] = useState<OnboardingSlideItem | null>(null);
 
-  // Fetch dynamic metadata options
-  const fetchMetadata = async () => {
-    try {
-      const res = await api.get('/rooms/meta/options');
-      setCategories(res.data.categories || []);
-      setEducationLevels(res.data.educationLevels || []);
-      setDifficulties(res.data.difficulties || []);
-    } catch (err) {
-      console.error('Failed to load system metadata options', err);
-    }
-  };
-
-  // Fetch all live dashboard data
-  const fetchData = async () => {
-    if (!token) return;
-    try {
-      setLoading(true);
-      const [statsRes, qRes, roomsRes, usersRes, ledgerRes] = await Promise.all([
-        api.get('/admin/stats'),
-        api.get('/admin/questions'),
-        api.get('/admin/rooms'),
-        api.get('/admin/users'),
-        api.get('/admin/ledgers'),
-      ]);
-      setStats(statsRes.data);
-      setQuestions(qRes.data);
-      setRooms(roomsRes.data);
-      setUsers(usersRes.data);
-      setLedgers(ledgerRes.data);
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        handleLogout();
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Check token on mount
   useEffect(() => {
-    fetchMetadata();
-    if (token) {
+    const saved = getAdminToken();
+    if (saved) {
+      setToken(saved);
       fetchData();
     }
-  }, [token]);
+  }, []);
 
-  // Handle Admin Login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const res = await api.post('/auth/login', { phone, password });
-      if (res.data.user.role !== 'ADMIN') {
-        setLoginError('Access denied: You must be an administrator.');
-        return;
+      const res = await api.login(phone, password);
+      if (res.token) {
+        saveAdminToken(res.token);
+        setToken(res.token);
+        fetchData();
       }
-      saveAdminToken(res.data.token);
-      setToken(res.data.token);
     } catch (err: any) {
-      setLoginError(err.response?.data?.error || 'Login failed');
+      setLoginError(err.response?.data?.error || 'Login failed. Check phone and password.');
     } finally {
       setLoading(false);
     }
@@ -117,71 +69,122 @@ export default function App() {
     setToken(null);
   };
 
-  const handleCreateQuestion = async (formData: any) => {
-    await api.post('/admin/questions', formData);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [statsRes, ledgersRes, bannersRes, slidesRes] = await Promise.allSettled([
+        api.getStats(),
+        api.getLedger(),
+        api.getBanners(),
+        api.getOnboardingSlides(),
+      ]);
+
+      if (statsRes.status === 'fulfilled') setStats(statsRes.value.stats);
+      if (ledgersRes.status === 'fulfilled') setLedgers(ledgersRes.value.ledgers || []);
+      if (bannersRes.status === 'fulfilled') setBanners(bannersRes.value.banners || []);
+      if (slidesRes.status === 'fulfilled') setSlides(slidesRes.value.slides || []);
+    } catch (err) {
+      console.error('Failed to load dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Hero Banners Handlers
+  const handleCreateBanner = async (bannerData: any) => {
+    await api.createBanner(bannerData);
+    setShowAddBanner(false);
     fetchData();
   };
 
-  const handleCreateRoom = async (formData: any) => {
-    await api.post('/admin/rooms', formData);
+  const handleToggleBannerActive = async (id: string, currentStatus: boolean) => {
+    await api.toggleBanner(id, !currentStatus);
     fetchData();
   };
 
-  // If unauthenticated, show Light Theme Admin Login Card
+  const handleDeleteBanner = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this promotional banner?')) {
+      await api.deleteBanner(id);
+      fetchData();
+    }
+  };
+
+  // Onboarding Slides Handlers
+  const handleCreateSlide = async (slideData: any) => {
+    await api.createOnboardingSlide(slideData);
+    setShowAddSlide(false);
+    fetchData();
+  };
+
+  const handleUpdateSlide = async (id: string, slideData: any) => {
+    await api.updateOnboardingSlide(id, slideData);
+    setEditingSlide(null);
+    fetchData();
+  };
+
+  const handleToggleSlideActive = async (id: string, currentStatus: boolean) => {
+    await api.toggleOnboardingSlide(id, !currentStatus);
+    fetchData();
+  };
+
+  const handleDeleteSlide = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this onboarding slide?')) {
+      await api.deleteOnboardingSlide(id);
+      fetchData();
+    }
+  };
+
+  // Login Screen if unauthenticated
   if (!token) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-3xl p-8 shadow-xl shadow-slate-200/50">
-          <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 mb-6 mx-auto border border-emerald-100">
-            <Trophy className="w-7 h-7" />
+        <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200/80 shadow-xl p-8 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-14 h-14 bg-amber-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-amber-600/30">
+              <Trophy className="w-7 h-7" />
+            </div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Set Quick Trade</h1>
+            <p className="text-sm text-slate-500">Master Control & Trading Admin Portal</p>
           </div>
-          <h1 className="text-2xl font-black text-center text-slate-900 tracking-tight">Quiz Arena Admin</h1>
-          <p className="text-slate-500 text-xs text-center mt-1">Multi-Category Skill Quiz Master Dashboard</p>
 
           {loginError && (
-            <div className="mt-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-600 text-xs font-semibold">
+            <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-xl">
               {loginError}
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="mt-6 space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <Input
-              label="Phone Number"
-              type="text"
+              label="Admin Phone Number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Admin Phone"
+              placeholder="Enter 10-digit phone"
               required
             />
-
             <Input
               label="Password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin Password"
+              placeholder="Enter password"
               required
             />
-
-            <Button type="submit" variant="primary" loading={loading} className="w-full py-3 mt-2">
-              Enter Dashboard
+            <Button type="submit" variant="primary" className="w-full py-3" disabled={loading}>
+              {loading ? 'Authenticating...' : 'Sign In as Master Admin'}
             </Button>
-
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-500">
-              <span className="font-bold text-slate-700">Default Demo Credentials:</span>
-              <br />
-              Phone: <code className="text-emerald-700 font-semibold">9999999999</code> | Password:{' '}
-              <code className="text-emerald-700 font-semibold">admin123</code>
-            </div>
           </form>
+
+          <p className="text-center text-xs text-slate-400">
+            Secure admin portal &bull; Authorized personnel only
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row text-slate-900">
-      {/* Component 1: Sidebar */}
+    <div className="min-h-screen bg-slate-50/50 flex flex-col md:flex-row font-sans">
+      {/* Component 1: Sidebar Navigation */}
       <Sidebar activeTab={activeTab} onTabChange={setActiveTab} onLogout={handleLogout} />
 
       {/* Main Content Area */}
@@ -194,72 +197,56 @@ export default function App() {
           {activeTab === 'overview' && (
             <OverviewTab
               stats={stats}
-              onAddQuestion={() => setShowAddQuestion(true)}
-              onAddRoom={() => setShowAddRoom(true)}
+              onGoToTrading={() => setActiveTab('trading')}
             />
           )}
 
-          {activeTab === 'questions' && (
-            <QuestionsTab
-              questions={questions}
-              categories={categories}
-              onAddQuestion={() => setShowAddQuestion(true)}
-              onOpenBulkUpload={() => setShowBulkUpload(true)}
+          {activeTab === 'trading' && <TradingTab token={token} />}
+
+          {activeTab === 'banners' && (
+            <BannersTab
+              banners={banners}
+              onAddBanner={() => setShowAddBanner(true)}
+              onToggleActive={handleToggleBannerActive}
+              onDeleteBanner={handleDeleteBanner}
             />
           )}
 
-          {activeTab === 'rooms' && (
-            <RoomsTab
-              rooms={rooms}
-              onAddRoom={() => setShowAddRoom(true)}
-              onReviewResults={(roomId) => {
-                setSelectedReviewRoomId(roomId);
-                setShowReviewResults(true);
-              }}
+          {activeTab === 'onboarding' && (
+            <OnboardingTab
+              slides={slides}
+              onAddSlide={() => setShowAddSlide(true)}
+              onEditSlide={(slide) => setEditingSlide(slide)}
+              onToggleActive={handleToggleSlideActive}
+              onDeleteSlide={handleDeleteSlide}
             />
           )}
-
-          {activeTab === 'users' && <UsersTab users={users} />}
 
           {activeTab === 'ledger' && <LedgerTab ledgers={ledgers} />}
         </div>
       </main>
 
-      {/* Component 4: Add Question Modal */}
-      <AddQuestionModal
-        isOpen={showAddQuestion}
-        onClose={() => setShowAddQuestion(false)}
-        categories={categories}
-        educationLevels={educationLevels}
-        difficulties={difficulties}
-        onSubmit={handleCreateQuestion}
+      {/* Component 4: Add Hero Banner Modal */}
+      <AddBannerModal
+        isOpen={showAddBanner}
+        onClose={() => setShowAddBanner(false)}
+        categories={['Crypto', 'Commodity', 'Forex']}
+        onSubmit={handleCreateBanner}
       />
 
-      {/* Component 5: Bulk Upload Excel / CSV Modal */}
-      <BulkUploadModal
-        isOpen={showBulkUpload}
-        onClose={() => setShowBulkUpload(false)}
-        onSuccess={fetchData}
+      {/* Component 5: Add Auth Onboarding Slide Modal */}
+      <AddOnboardingSlideModal
+        isOpen={showAddSlide}
+        onClose={() => setShowAddSlide(false)}
+        onSubmit={handleCreateSlide}
       />
 
-      {/* Component 6: Review & Release Tournament Results Modal */}
-      <ReviewResultsModal
-        isOpen={showReviewResults}
-        onClose={() => {
-          setShowReviewResults(false);
-          setSelectedReviewRoomId('');
-        }}
-        roomId={selectedReviewRoomId}
-        onSuccess={fetchData}
-      />
-
-      {/* Component 7: Add Room Modal */}
-      <AddRoomModal
-        isOpen={showAddRoom}
-        onClose={() => setShowAddRoom(false)}
-        categories={categories}
-        educationLevels={educationLevels}
-        onSubmit={handleCreateRoom}
+      {/* Component 6: Edit Auth Onboarding Slide Modal */}
+      <EditOnboardingSlideModal
+        isOpen={Boolean(editingSlide)}
+        slide={editingSlide}
+        onClose={() => setEditingSlide(null)}
+        onSubmit={handleUpdateSlide}
       />
     </div>
   );
